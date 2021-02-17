@@ -9,13 +9,24 @@ class SuperComputerPlayer < ComputerPlayer
         return child.prev_move_pos
       end
     end
-    # debugger
+
+    # ttt_node.children.each do |child|
+    #   unless child.losing_node?(mark)
+    #     return child.prev_move_pos
+    #   end
+    # end
+    
+    opponent_mark = :x
+    if mark == :x
+      opponent_mark = :o
+    end
     ttt_node.children.each do |child|
-      if child.losing_node?(mark)
+      unless child.winning_node?(opponent_mark)
         return child.prev_move_pos
       end
     end
 
+    raise error
     return nil
   end
 end
@@ -27,16 +38,6 @@ if __FILE__ == $PROGRAM_NAME
 
   TicTacToe.new(hp, cp).run
 end
-
-
-# Phase II: SuperComputerPlayer
-# Write a subclass of ComputerPlayer; we'll override the #move method to use our TicTacToeNode.
-
-# In the #move method, build a TicTacToeNode from the board stored in the game passed in as an argument. 
-
-# Next, iterate through the children of the node we just created. 
-
-#If any of the children is a winning_node? for the mark passed in to the #move method, return that node's prev_move_pos because that is the position that causes a certain victory! I told you we would use that later!
 
 # If none of the children of the node we created are winning_node?s, that's ok. We can just pick one that isn't a losing_node? and return its prev_move_pos. That will prevent the opponent from ever winning, and that's almost as good. To make that even more clear: if a winner isn't found, pick one of the children of our node that returns false to losing_node?.
 
