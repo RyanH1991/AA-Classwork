@@ -1,5 +1,5 @@
 require_relative "PolyTreeNode/lib/00_tree_node"
-
+require "byebug"
 
 class KnightPathFinder
 
@@ -14,7 +14,6 @@ class KnightPathFinder
         [+2,-1]
     ]
 
-    
     def self.valid_moves(pos)
         valid = []
         #naively calculate the eight possible moves. 
@@ -27,19 +26,14 @@ class KnightPathFinder
         end
         valid
     end
-    attr_reader :considered_positions   
+
+    attr_reader :considered_positions, :root_node, :start_pos
+
     def initialize (pos)
         @considered_positions = [pos]
-        p @considered_positions[0]
-        #KnightPathFinder.root_node
-        p build_move_tree
-        p KnightPathFinder.root_node
-    end
-    
-    def self.root_node
-        #p @considered_positions
-        #root_node = PolyTreeNode.new(@considered_positions[0])
-        root_node = PolyTreeNode.new([0,0])
+        @root_node = PolyTreeNode.new(pos)
+        @start_pos = pos
+        build_move_tree
     end
     
     def build_move_tree
@@ -47,8 +41,7 @@ class KnightPathFinder
         queue_array = [@considered_positions[0]]
 
         #polytree variables
-        poly_queue = [KnightPathFinder.root_node]
-
+        poly_queue = [@root_node]
         until queue_array.empty?
             new_moves = new_move_positions(queue_array[0])
             queue_array += new_moves
@@ -63,9 +56,8 @@ class KnightPathFinder
             poly_queue += new_nodes
             poly_queue.shift
         end
-        #move_tree
         
-        return KnightPathFinder.root_node
+        move_tree
     end
 
     def new_move_positions(pos)
@@ -85,9 +77,17 @@ class KnightPathFinder
     end
 
     def find_path(end_pos)
+        path = trace_path_back(@root_node.dfs(end_pos))
+    end
 
+    def trace_path_back(node)
+        path = []
+        until node.parent.nil?
+            path.unshift(node.value)
+        end
+        path
     end
 end
 
 tree = KnightPathFinder.new([0,0])
-p tree
+p tree.root_node
