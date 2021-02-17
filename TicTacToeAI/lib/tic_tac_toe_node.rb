@@ -11,9 +11,31 @@ class TicTacToeNode
   end
 
   def losing_node?(evaluator)
+    if @board.over?
+      return @board.winner != evaluator
+    end
+    children = self.children
+    if @next_mover_mark == evaluator
+      if children.all?{|child| child.board.tied?}
+        return false
+      end
+      return children.all?{|child| child.losing_node?(evaluator)}
+    else
+      return children.any?{|child| child.losing_node?(evaluator)}
+    end
   end
 
   def winning_node?(evaluator)
+    if @board.over?
+      return @board.winner == evaluator
+    end
+    children = self.children
+    if @next_mover_mark == evaluator
+      return children.any?{|child| child.winning_node?(evaluator)}
+    else
+      return children.all?{|child| child.winning_node?(evaluator)}
+    end
+
   end
 
   # This method generates an array of all moves that can be made after
