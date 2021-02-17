@@ -77,17 +77,20 @@ class KnightPathFinder
     end
 
     def find_path(end_pos)
-        path = trace_path_back(@root_node.dfs(end_pos))
+        path = trace_path_back(@root_node.bfs(end_pos))
     end
 
     def trace_path_back(node)
         path = []
         until node.parent.nil?
             path.unshift(node.value)
+            node = node.parent
         end
+        path.unshift(node.value)
         path
     end
 end
 
 tree = KnightPathFinder.new([0,0])
-p tree.root_node
+p tree.find_path([7,6])
+p tree.find_path([6,2])
