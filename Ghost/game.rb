@@ -1,6 +1,7 @@
 require "set"
 require_relative "../TreeTraversal/PolyTreeNode/lib/00_tree_node"
 require "byebug"
+require_relative "player"
 
 file = File.open("dictionary")
 dictionary = file.readlines.map(&:chomp).to_set
@@ -48,21 +49,35 @@ class Game
     end
 
     def game
+        until @player1.losses == 5 || @player2.losses == 5
+            self.play_round
+            #put displaying scores in a separate function
+            #Also spell out ghost
+            puts @player1.name + " losses:"
+            puts
+            puts @player1.losses
+            puts @player2.name + " losses:"
+            puts
+            puts @player2.losses
+            @current_node = @root_node
+        end
+        puts "Game Over!"
+    end
+    
+    def play_round
         player = @player1
         game_status = true
         while game_status
             game_status = take_turn(player)
+            player.add_loss unless game_status 
             if player == @player1
                 player = @player2
             else
                 player = @player1
             end
         end
-        puts "Game Over!"
-    end
-
-    def play_round
-
+        puts "You earned a letter"
+        
     end
 
     def current_player
@@ -83,9 +98,9 @@ class Game
         valid_move = :not_char
         
         while valid_move == :not_char
-            puts "Make your move #{player}!"
-            char = gets.chomp
-            valid_move = valid_play?(char)
+            # puts "Make your move #{player}!"
+            # char = gets.chomp
+            valid_move = valid_play?(player.guess)
         end
 
         @fragment += char
@@ -107,7 +122,9 @@ class Game
     end
 end
 
-GhostGame = Game.new("Jonathan","Ryan",dictionary)
+p1 = Player.new("Jonathan")
+p2 = Player.new("Ryan")
+GhostGame = Game.new(p1,p2,dictionary)
 
 #play_round
 # The core game logic lives here. I wrote a number of helper methods to keep things clean:
