@@ -5,41 +5,47 @@ require "byebug"
 file = File.open("dictionary")
 dictionary = file.readlines.map(&:chomp).to_set
 
-root_node = PolyTreeNode.new(nil)
-current_node = nil
-
-dictionary.each do |word|
-    current_node = root_node
-    (0...word.length).each do |i|
-        chr = word[i]
-        previous_node = current_node
-        if current_node.children.length > 0
-            current_node.children.each do |child|
-                if child.value == chr
-                    current_node = child
-                    break
-                end
-            end
-
-        end
-        if current_node == previous_node
-            new_node = PolyTreeNode.new(chr)
-            current_node.children << new_node
-            current_node = new_node
-        end
-        puts current_node.value
-    end
-end
 
 class Game
-
+    
     attr_reader :player1, :player2, :fragment
-
+    
     def initialize(player1, player2, fragment, dictionary)
         @player1 = player1
         @player2 = player2
         @fragment = fragment
         @dictionary = dictionary
+        @root_node = PolyTreeNode.new(nil)
+        @current_node = @root_node
+        build_tree
+    end
+    
+    #literally built a trie tree
+    def build_tree
+        current_node = nil
+        
+        @dictionary.each do |word|
+            current_node = @root_node
+            (0...word.length).each do |i|
+                chr = word[i]
+                previous_node = current_node
+                if current_node.children.length > 0
+                    current_node.children.each do |child|
+                        if child.value == chr
+                            current_node = child
+                            break
+                        end
+                    end
+        
+                end
+                if current_node == previous_node
+                    new_node = PolyTreeNode.new(chr)
+                    current_node.children << new_node
+                    current_node = new_node
+                end
+                puts current_node.value
+            end
+        end
     end
 
     def play_round
@@ -77,7 +83,13 @@ class Game
     end
 
     def valid_play?(char)
-
+        return false unless 'abcdefghijklmnopqrstuvwxyz'.include?(char)
+        frag_test = @fragment.dup
+        frag_test += char
+        current_node = @current_node
+        frag_test.each_char do |chr|
+            
+        end
     end
 end
 
