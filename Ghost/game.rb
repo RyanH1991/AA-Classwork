@@ -10,13 +10,18 @@ class Game
     
     attr_reader :player1, :player2, :fragment
     
-    def initialize(player1, player2, dictionary)
+    def initialize(*players)
         @player1 = player1
         @player2 = player2
+        @players = players
+
         @fragment = ""
-        @dictionary = dictionary
         @root_node = PolyTreeNode.new(nil)
         @current_node = @root_node
+
+        file = File.open("dictionary")
+        @dictionary = file.readlines.map(&:chomp).to_set
+
         build_tree
         game
     end
@@ -49,47 +54,46 @@ class Game
     end
 
     def game
-        until @player1.losses == 5 || @player2.losses == 5
+        until @players.length == 1
             self.play_round
-            #put displaying scores in a separate function
-            #Also spell out ghost
-            puts @player1.name + " losses:"
-            puts
-            puts @player1.losses
-            puts @player2.name + " losses:"
-            puts
-            puts @player2.losses
+            self.display_scores
+            @players.any? { |player| player.losses == 5 }
             @current_node = @root_node
         end
+        puts "#{@players[0].name} won the freaking game!"
         puts "Game Over!"
     end
     
+    def display_scores
+        @players.each do |player|
+            puts player.name + " letters:" + player.letters
+            puts 
+        end
+    end
+    
     def play_round
-        player = @player1
+        player = @players[0]
+        i = 0
         game_status = true
         while game_status
             game_status = take_turn(player)
-            player.add_loss unless game_status 
-            if player == @player1
-                player = @player2
-            else
-                player = @player1
+            unless game_status
+                player.add_loss
+                puts "#{player.name} has earned a letter"
+                puts
+            end
+            i = (i + 1) % @players.length
+            player = @players[i]
+        end
+
+        (0...@players.length).each do |i|
+            player = @players[i]
+            if player.losses == 5
+                self.display_scores
+                @players = @players[0...i] + @players[i+1..-1]
+                break
             end
         end
-        puts "You earned a letter"
-        
-    end
-
-    def current_player
-        @player1
-    end
-
-    def previous_player
-        @player2
-    end
-
-    def next_player!
-        @player2
     end
 
     def take_turn(player)
@@ -98,8 +102,6 @@ class Game
         valid_move = :not_char
         
         while valid_move == :not_char
-            # puts "Make your move #{player}!"
-            # char = gets.chomp
             valid_move = valid_play?(player.guess)
         end
 
@@ -124,31 +126,10 @@ end
 
 p1 = Player.new("Jonathan")
 p2 = Player.new("Ryan")
-GhostGame = Game.new(p1,p2,dictionary)
+p3 = Player.new("Rupesh")
+p4 = Player.new("Alex")
+GhostGame = Game.new(p1, p2, p3, p4)
 
-#play_round
-# The core game logic lives here. I wrote a number of helper methods to keep things clean:
-
-#current_player
-#previous_player
-#next_player!: updates the current_player and previous_player
-#take_turn(player): gets a char from the player until a valid play is made; then updates the fragment and checks against the dictionary. You may also want to alert the player if they attempt to make an invalid move (or, if you're feeling mean, you might cause them to lose outright).
-#valid_play?(char): Checks that string is a letter of the alphabet and that there are words we can spell after adding it to the fragment
-
-# Phase 2: Playing a Full Game
-
-# Now that we have the logic to play a single round of Ghost, we'll have to add another layer.
-# Game#losses and Game#record
-
-# In a game of Ghost, a player "earns" a letter each time they lose a round. Thus, if Eric beats Ryan 3 times and loses once, then Eric has a "G" and Ryan has a "GHO". If a player spells the word "GHOST", they are eliminated from play (and in the case of two players, the other player wins).
-
-# I added a losses hash to my Game class. The keys to the hash are Players, and the values are the number of games that player has lost. Update this at the end of #play_round. For flavor, I also wrote a helper method, #record(player), that translates a player's losses into a substring of "GHOST".
-# Game#run
-
-# This method should call #play_round until one of the players reaches 5 losses ("GHOST"). I wrote a helper method, #display_standings, to show the scoreboard at the beginning of each round. Remember to reset the fragment at the beginning of each round, as well!
-# Phase 3: Multiplayer!
-
-# Refactor your game to work with more than just two players. Instead of ending the game when one of the players reaches five losses, simply exclude that player from further rounds. End the game when only one player is left standing. Hint: You won't be able to use an instance variable for each player anymore. What data structure might we use as an alternative?
 # Phase Bonus
 
 #     Write an AiPlayer class for your Ghost game. You'll need to figure out the logic for picking a winning letter on each turn. In order to do this, your AiPlayer will need to know both the current fragment and the number of other players (n).

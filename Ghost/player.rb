@@ -15,4 +15,9 @@ class Player
         @losses+=1
     end
 
+    def letters
+        return "" if @losses == 0
+        return "GHOST"[0...@losses]
+    end
+
 end
