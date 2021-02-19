@@ -10,21 +10,21 @@ class SuperComputerPlayer < ComputerPlayer
       end
     end
 
-    # ttt_node.children.each do |child|
-    #   unless child.losing_node?(mark)
-    #     return child.prev_move_pos
-    #   end
-    # end
-    
-    opponent_mark = :x
-    if mark == :x
-      opponent_mark = :o
-    end
     ttt_node.children.each do |child|
-      unless child.winning_node?(opponent_mark)
+      unless child.losing_node?(mark)
         return child.prev_move_pos
       end
     end
+
+    # opponent_mark = :x
+    # if mark == :x
+    #   opponent_mark = :o
+    # end
+    # ttt_node.children.each do |child|
+    #   unless child.winning_node?(opponent_mark)
+    #     return child.prev_move_pos
+    #   end
+    # end
 
     raise error
     return nil

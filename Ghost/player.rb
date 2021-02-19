@@ -19,5 +19,4 @@ class Player
         return "" if @losses == 0
         return "GHOST"[0...@losses]
     end
-
 end
