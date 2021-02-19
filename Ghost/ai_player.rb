@@ -21,7 +21,8 @@ class AIPlayer < Player
         end
         guess = current_node.children.sample.value
 
-        puts "Machine #{@name} selects the letter: #{guess}"
+        puts "Machine #{@name} selects the letter:"
+        puts guess
 
         guess
     end
