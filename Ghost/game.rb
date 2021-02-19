@@ -1,9 +1,8 @@
-require "set"
 require "byebug"
 
-require_relative "../TreeTraversal/PolyTreeNode/lib/00_tree_node"
 require_relative "player"
 require_relative "trie_tree"
+require_relative "ai_player"
 
 class Game
     
@@ -25,6 +24,7 @@ class Game
             self.display_scores
             @players.any? { |player| player.losses == 5 }
             @current_node = @trie_tree.root_node
+            @fragment = ""
         end
         puts "#{@players[0].name} won the freaking game!"
         puts "Game Over!"
@@ -64,11 +64,12 @@ class Game
 
     def take_turn(player)
         
-        char = "";
         valid_move = :not_char
-        
+        char = ""
+
         while valid_move == :not_char
-            valid_move = valid_play?(player.guess)
+            char = player.guess(@fragment)
+            valid_move = valid_play?(char)
         end
 
         @fragment += char
@@ -83,6 +84,10 @@ class Game
         @current_node.children.each do |child|
             if child.value == char
                 @current_node = child
+                if @current_node.children == []
+                    puts "you finished the word!"
+                    return false
+                end
                 return true
             end
         end
@@ -95,4 +100,5 @@ p1 = Player.new("Jonathan")
 p2 = Player.new("Ryan")
 p3 = Player.new("Rupesh")
 p4 = Player.new("Alex")
-GhostGame = Game.new(p1, p2, p3, p4)
+a1 = AIPlayer.new("Machine")
+GhostGame = Game.new(p1, p2, p3, p4, a1)

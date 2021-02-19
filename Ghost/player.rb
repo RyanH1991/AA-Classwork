@@ -5,14 +5,14 @@ class Player
         @losses = 0
     end
 
-    def guess 
+    def guess(fragment)
         puts "Make your move #{@name}!"
         char = gets.chomp
         return char
     end
 
     def add_loss
-        @losses+=1
+        @losses += 1
     end
 
     def letters

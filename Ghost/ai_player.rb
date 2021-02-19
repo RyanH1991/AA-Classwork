@@ -1,14 +1,29 @@
 require_relative "player"
+require_relative "trie_tree"
 
-class AiPlayer < Player
+class AIPlayer < Player
     def initialize(name)
         super(name)
         @name = name
+        @trie_tree = TrieTree.new
     end
 
-    def guess
+    def guess(fragment)
 
-        puts "Machine #{@name} selects the letter: "
+        guess = ""
+        current_node = @trie_tree.root_node
+        fragment.each_char do |chr|
+            current_node.children.each do |child|
+                if child.value == chr
+                    current_node = child
+                end
+            end 
+        end
+        guess = current_node.children.sample.value
+
+        puts "Machine #{@name} selects the letter: #{guess}"
+
+        guess
     end
 
 end
