@@ -1,6 +1,6 @@
 require "set"
 
-require_relative "../TreeTraversal/PolyTreeNode/lib/00_tree_node"
+require_relative "poly_tree_node"
 
 class TrieTree
 

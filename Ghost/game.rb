@@ -29,6 +29,11 @@ class Game
         puts "#{@players[0].name} won the freaking game!"
         puts "Game Over!"
     end
+
+    def rotate_players(i)
+        #i is the player that the last round ended on
+        @players = @players[i..-1] + @players[0...i]
+    end
     
     def display_scores
         @players.each do |player|
@@ -44,22 +49,19 @@ class Game
         while game_status
             game_status = take_turn(player)
             unless game_status
-                player.add_loss
+                total_losses = player.add_loss
+                if total_losses == 5
+                    puts "#{player.name} is a GHOST"
+                    @players = @players[0...i] + @players[i+1..-1]
+                    i = i - 1
+                end
                 puts "#{player.name} has earned a letter"
                 puts
             end
             i = (i + 1) % @players.length
             player = @players[i]
         end
-
-        (0...@players.length).each do |i|
-            player = @players[i]
-            if player.losses == 5
-                self.display_scores
-                @players = @players[0...i] + @players[i+1..-1]
-                break
-            end
-        end
+        self.rotate_players(i)
     end
 
     def take_turn(player)
@@ -98,7 +100,7 @@ end
 # ask for the number of players and their names
 p1 = Player.new("Jonathan")
 p2 = Player.new("Ryan")
-p3 = Player.new("Rupesh")
-p4 = Player.new("Alex")
-a1 = AIPlayer.new("Machine")
+p3 = Player.new("Eternal")
+p4 = Player.new("Telly")
+a1 = AIPlayer.new("Chris")
 GhostGame = Game.new(p1, p2, p3, p4, a1)
