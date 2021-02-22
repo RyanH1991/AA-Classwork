@@ -19,14 +19,13 @@ class AIPlayer < Player
                 end
             end 
         end
-        #guess = current_node.children.sample.value
-        dfs_search(current_node, player_count, "") #will all return ending fragments.
-        #here, choose fragment that will not lead to AI losing.
 
-        # x*player_count + 1
-
-        #if (fragment_length  % player_count) != 1 #acceptable ancestry
-
+        guess = current_node.dfs_search(player_count, "")
+        if current_node.children.empty? || fragment.empty?
+            guess = 'abcdefghijklmnopqrstuvwxyz'.split('').sample
+        elsif guess.nil?
+            guess = current_node.children.sample.value
+        end
         
         puts "Machine #{@name} selects the letter:"
         puts guess

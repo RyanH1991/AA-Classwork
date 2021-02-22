@@ -38,31 +38,28 @@ class PolyTreeNode
         
     end
 
-    # def dfs(target_value)
-    #     if self.value == target_value
-    #         return self
-    #     else
-    #         self.children.each do |child|
-    #             childCheck = child.dfs(target_value)
-    #             if childCheck != nil
-    #                 return childCheck
-    #             end
-    #         end
-    #     end
-    #     nil
-    # end
-
-    def dfs_search(node, player_count, fragment)
+    #fantasia fails, must fix
+    def dfs_search(player_count, fragment)
+        if self.value
+            fragment += self.value
+        end
         # we take the incrementation of fragment.length
         # to account for the addition of the current char
-        if node.children.empty? && (fragment.length + 1) % player_count != 1
-            return fragment[0]
+        if self.children.empty? && fragment.length % player_count != 1
+            #fail safe for the challenge feature
+            if fragment.length == 1
+                return nil
+            end
+            #we return position 1 becuase pos 0 is the letter that previous
+            #player concatinated
+            return fragment[1]
         end
-        #fragment_length = 0
         
-        node.children.each do |child|
-            fragment += node.value
-            return dfs_search(child, player_count, fragment)
+        self.children.each do |child|
+            node_check = child.dfs_search(player_count, fragment)
+            if node_check
+                return node_check 
+            end
         end
         nil
     end

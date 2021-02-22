@@ -47,7 +47,7 @@ class Game
         i = 0
         game_status = true
         while game_status
-            game_status = take_turn(player)
+            game_status = self.take_turn(player)
             unless game_status
                 total_losses = player.add_loss
                 if total_losses == 5
@@ -98,10 +98,9 @@ class Game
     end
 end
 
+# if @players.length == 1 we should default player 2 to be the AI-Player
 # ask for the number of players and their names
 p1 = Player.new("Jonathan")
 p2 = Player.new("Ryan")
-p3 = Player.new("Eternal")
-p4 = Player.new("Telly")
 a1 = AIPlayer.new("Chris")
-GhostGame = Game.new(p1, p2, p3, p4, a1)
+GhostGame = Game.new(p1, p2, a1)
