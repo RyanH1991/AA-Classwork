@@ -5,7 +5,7 @@ class Player
         @losses = 0
     end
 
-    def guess(fragment)
+    def guess(fragment, player_count)
         puts "Make your move #{@name}!"
         char = gets.chomp
         return char

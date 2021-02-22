@@ -8,7 +8,7 @@ class AIPlayer < Player
         @trie_tree = TrieTree.new
     end
 
-    def guess(fragment)
+    def guess(fragment, player_count)
 
         guess = ""
         current_node = @trie_tree.root_node
@@ -19,8 +19,15 @@ class AIPlayer < Player
                 end
             end 
         end
-        guess = current_node.children.sample.value
+        #guess = current_node.children.sample.value
+        dfs_search(current_node, player_count, "") #will all return ending fragments.
+        #here, choose fragment that will not lead to AI losing.
 
+        # x*player_count + 1
+
+        #if (fragment_length  % player_count) != 1 #acceptable ancestry
+
+        
         puts "Machine #{@name} selects the letter:"
         puts guess
 

@@ -70,7 +70,8 @@ class Game
         char = ""
 
         while valid_move == :not_char
-            char = player.guess(@fragment)
+            # char = player.guess(@fragment)
+            char = player.guess(@fragment, @players.length)
             valid_move = valid_play?(char)
         end
 

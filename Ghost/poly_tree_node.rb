@@ -38,16 +38,31 @@ class PolyTreeNode
         
     end
 
-    def dfs(target_value)
-        if self.value == target_value
-            return self
-        else
-            self.children.each do |child|
-                childCheck = child.dfs(target_value)
-                if childCheck != nil
-                    return childCheck
-                end
-            end
+    # def dfs(target_value)
+    #     if self.value == target_value
+    #         return self
+    #     else
+    #         self.children.each do |child|
+    #             childCheck = child.dfs(target_value)
+    #             if childCheck != nil
+    #                 return childCheck
+    #             end
+    #         end
+    #     end
+    #     nil
+    # end
+
+    def dfs_search(node, player_count, fragment)
+        # we take the incrementation of fragment.length
+        # to account for the addition of the current char
+        if node.children.empty? && (fragment.length + 1) % player_count != 1
+            return fragment[0]
+        end
+        #fragment_length = 0
+        
+        node.children.each do |child|
+            fragment += node.value
+            return dfs_search(child, player_count, fragment)
         end
         nil
     end
