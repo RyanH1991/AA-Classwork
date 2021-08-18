@@ -33,6 +33,7 @@ class TrieTree
                 end
                 if current_node == previous_node
                     new_node = PolyTreeNode.new(chr)
+                    #we should be using PolyTreeNode function 'add_child' instead of shoveling
                     current_node.children << new_node
                     current_node = new_node
                 end
